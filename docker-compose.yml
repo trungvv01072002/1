@@ -26,17 +26,6 @@ services:
     restart: always
     ports:
       - 8081:80
-#  management-user:
-#    container_name: management-user
-#    environment:
-#      MYSQL_URL: db
-#      MYSQL_DATABASE: emp
-#      MYSQL_USER: localdev123456
-#      MYSQL_PASSWORD: 123456
-#    ports:
-#      - "8080:8080"
-#    networks:
-#      - my-external-network
 
 
 volumes:
