@@ -1,0 +1,22 @@
+spring:
+  application:
+    name: Management-user
+  datasource:
+    driver-class-name:  com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://${URL:localhost}:3306/${MYSQL_DATABASE:emp}
+    username: ${MYSQL_USER:localdev123456}
+    password: ${MYSQL_PASSWORD:123456}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: 'true'
+  server:
+    port: '8080'
+
+jwt:
+  secretary: daf66e01593f61a15b857cf433aae03a005812b31234e149036bcc8dee755dbb
+
+app:
+  app-jwt-expiration-milliseconds: '21440000'
+  jwt-secret: daf66e01593f61a15b857cf433aae03a005812b31234e149036bcc8dee755dbb
+  app-jwt-renewal-milliseconds: '604800000'

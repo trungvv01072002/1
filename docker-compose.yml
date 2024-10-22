@@ -1,0 +1,48 @@
+
+services:
+  db:
+    image: mysql:8.0-oracle
+    container_name: db
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+      MYSQL_DATABASE: emp
+      MYSQL_USER: localdev123456
+      MYSQL_PASSWORD: 123456
+    ports:
+      - "3306:3306"
+    volumes:
+      - dbdata:/var/lib/mysql
+    networks:
+        - my-external-network
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:5.2
+    container_name: pma
+    links:
+      - db
+    environment:
+      PMA_HOST: db
+      PMA_PORT: 3306
+      PMA_ARBITRARY: 1
+    restart: always
+    ports:
+      - 8081:80
+#  management-user:
+#    container_name: management-user
+#    environment:
+#      MYSQL_URL: db
+#      MYSQL_DATABASE: emp
+#      MYSQL_USER: localdev123456
+#      MYSQL_PASSWORD: 123456
+#    ports:
+#      - "8080:8080"
+#    networks:
+#      - my-external-network
+
+
+volumes:
+  dbdata:
+
+networks:
+  my-external-network:
+    name: my-external-network
+    external: true
