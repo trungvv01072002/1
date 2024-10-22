@@ -19,9 +19,7 @@ public class UserController {
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody UserRegisterReq userRegisterReq) {
         try{
-
-            UserRes userRes = userService.registerUser(userRegisterReq);
-            return new ResponseEntity<>(userRes, HttpStatus.CREATED);
+            return new ResponseEntity<>( userService.registerUser(userRegisterReq), HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
@@ -43,6 +41,27 @@ public class UserController {
     public ResponseEntity<?> search(@RequestParam int page, @RequestParam int size, @RequestParam String keySearch) {
         try{
             return new ResponseEntity<>(userService.getAllUser(page, size, keySearch), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+
+    }
+
+    @PutMapping("/update/{id}")
+    public ResponseEntity<?> update(@RequestBody UserRegisterReq userRegisterReq, @PathVariable("id") Long id) {
+        try{
+            UserRes userRes = userService.updateUser(userRegisterReq, id);
+            return new ResponseEntity<>(userRes, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+
+    }
+
+    @GetMapping("/profile")
+    public ResponseEntity<?> getUserByJwt(@RequestHeader("Authorization") String jwt) {
+        try{
+            return new ResponseEntity<>(userService.getUserByJwt(jwt), HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }

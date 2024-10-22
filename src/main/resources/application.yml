@@ -13,10 +13,10 @@ spring:
   server:
     port: '8080'
 
-jwt:
-  secretary: daf66e01593f61a15b857cf433aae03a005812b31234e149036bcc8dee755dbb
+#jwt:
+#  secretary: daf66e01593f61a15b857cf433aae03a005812b31234e149036bcc8dee755dbb
 
 app:
   app-jwt-expiration-milliseconds: '21440000'
-  jwt-secret: daf66e01593f61a15b857cf433aae03a005812b31234e149036bcc8dee755dbb
+  jwt-secret: 750ca18c80ff33503cb101c61e9dfad1d9aa55156f2510fbbf50f0db2595d153bcc1bfc509bf82ab9535427653ee90c62662132d447af8758917a64ecee7e5e3
   app-jwt-renewal-milliseconds: '604800000'

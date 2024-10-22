@@ -50,7 +50,7 @@ public class SpringSecurityConfig {
 //                    authorize.requestMatchers("/api/auth/signingoogle","/api/auth/profile").authenticated();
 //                    authorize.requestMatchers("/", "/error", "/webjars/**","/api/auth/**", "/oauth2/**").permitAll();
 //                    authorize.requestMatchers("/api/admin/**","/api/schedule/**","/api/account/**").hasAuthority("ADMIN");
-//                    authorize.requestMatchers("/api/user/**").hasAnyAuthority("EMPLOYEE","ADMIN");
+//                    authorize.requestMatchers("/api/v1/user/**").hasAnyAuthority("EMPLOYEE","ADMIN");
                     authorize.anyRequest().permitAll();
                 });
 //

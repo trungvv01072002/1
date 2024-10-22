@@ -8,6 +8,6 @@ import lombok.Setter;
 @Getter
 @Builder
 public class UserLoginReq {
-    private String email;
+    private String emailOrUsername;
     private String password;
 }

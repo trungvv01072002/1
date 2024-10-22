@@ -17,10 +17,14 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
-// block http request and authentication token if valid set user auth in the security context
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter { // apply one per resquest
+
+
+    @Autowired
     private JwtTokenProvider jwtTokenProvider;
+
+    @Autowired
     private UserDetailsService userDetailsService;
 
     @Autowired

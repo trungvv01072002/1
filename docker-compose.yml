@@ -13,7 +13,7 @@ services:
     volumes:
       - dbdata:/var/lib/mysql
     networks:
-        - my-external-network
+      - my-external-network
   phpmyadmin:
     image: phpmyadmin/phpmyadmin:5.2
     container_name: pma
@@ -24,8 +24,23 @@ services:
       PMA_PORT: 3306
       PMA_ARBITRARY: 1
     restart: always
+    networks:
+      - my-external-network
     ports:
       - 8081:80
+#  app:
+#    container_name: app
+#    image: management-user
+#    ports:
+#      - "8080:8080"
+#    networks:
+#        - my-external-network
+#    environment:
+#      - "SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/emp"
+#      - "SPRING_DATASOURCE_USERNAME=localdev123456" # Replace 'your_mysql_user' with the same name you used for MYSQL_USER in the db service.
+#      - "SPRING_DATASOURCE_PASSWORD=123456" # Replace 'your_mysql_password' with the same name you used for MYSQL_PASSWORD in the db service.
+#    depends_on:
+#      - db
 
 
 volumes:
