@@ -1,5 +1,6 @@
 package com.example.managementuser.controllers;
 
+import com.example.managementuser.Exceptions.CustomException;
 import com.example.managementuser.dtos.req.JWTAuthDto;
 import com.example.managementuser.dtos.req.UserLoginReq;
 import com.example.managementuser.dtos.req.UserRegisterReq;
@@ -49,8 +50,7 @@ public class UserController {
     @PutMapping("/update/{id}")
     public ResponseEntity<?> update(@RequestBody UserRegisterReq userRegisterReq, @PathVariable("id") Long id) {
         try{
-            UserRes userRes = userService.updateUser(userRegisterReq, id);
-            return new ResponseEntity<>(userRes, HttpStatus.OK);
+            return new ResponseEntity<>(userService.updateUser(userRegisterReq, id), HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
@@ -60,9 +60,19 @@ public class UserController {
     @GetMapping("/profile")
     public ResponseEntity<?> getUserByJwt(@RequestHeader("Authorization") String jwt) {
         try{
-//            return new ResponseEntity<>(userService.getUserByJwt(jwt), HttpStatus.OK);
             return new ResponseEntity<>(userService.getUserByJwt(jwt), HttpStatus.OK);
 
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<?> deleteUser(@PathVariable("id") Long id) {
+        try{
+            userService.deleteUser(id);
+            return new ResponseEntity<>("Delete success", HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }

@@ -1,6 +1,6 @@
 package com.example.managementuser.dtos.domains;
 
-import com.example.managementuser.constants.RoleEnum;
+import com.example.managementuser.enums.RoleEnum;
 
 public interface UserAndRoleI {
     Long getId();

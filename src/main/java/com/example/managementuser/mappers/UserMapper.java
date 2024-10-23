@@ -9,6 +9,7 @@ import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface UserMapper {
+    @Mapping(target = "roles", source = "user.roles")
     UserRes toUserRes(User user);
     List<UserRes> toUserResList(List<User> users);
 

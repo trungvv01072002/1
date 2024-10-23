@@ -43,6 +43,16 @@ public class SpringSecurityConfig {
     String [] whiteList = new String[]{
             "/api/v1/users/login",
             "/api/v1/users/register",
+            "/swagger-ui/**",
+            "/v3/**"
+    };
+
+    String [] userApiList = new String[]{
+            "/api/v1/users/**"
+    };
+
+    String [] adminApiList = new String[]{
+            "/api/v1/admin/**"
     };
 
 
@@ -51,8 +61,9 @@ public class SpringSecurityConfig {
         http.cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((authorize) -> {
-                    authorize.requestMatchers(whiteList).permitAll()
-                            .anyRequest().authenticated();
+//                    authorize.requestMatchers(whiteList).permitAll()
+//                            .anyRequest().authenticated();
+                    authorize.anyRequest().permitAll();
                 });
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
@@ -78,9 +89,5 @@ public class SpringSecurityConfig {
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
-
-
-
-
 
 }

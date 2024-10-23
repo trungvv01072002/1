@@ -1,6 +1,7 @@
 package com.example.managementuser.entities;
 
-import com.example.managementuser.constants.RoleEnum;
+import com.example.managementuser.enums.RoleEnum;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -18,7 +19,10 @@ public class Role {
     private Long id;
     @Enumerated(EnumType.STRING)
     private RoleEnum name;
-    @Column(name = "user_id")
-    private Long userId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    @JsonIgnore
+    private User user;
 
 }

@@ -2,8 +2,10 @@ package com.example.managementuser.services;
 
 import com.example.managementuser.entities.Role;
 import com.example.managementuser.entities.User;
+import com.example.managementuser.enums.RoleEnum;
 import com.example.managementuser.repositories.RoleRepository;
 import com.example.managementuser.repositories.UserRepository;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -20,6 +22,22 @@ import java.util.Set;
 public class CustomUserDetailService implements UserDetailsService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+
+    @PostConstruct
+    private void postConstruct() {
+        User user = userRepository.findUserByUserName("admin")
+                .orElse(null);
+        if (user == null) {
+            User savedUser = userRepository.save(User.builder()
+                    .email("admin")
+                    .password("admin")
+                    .fullName("admin")
+                    .userName("admin")
+                    .build());
+            roleRepository.save(Role.builder().user(savedUser).name(RoleEnum.ROLE_ADMIN).build());
+        }
+    }
+
 
     @Override
     public UserDetails loadUserByUsername(String usernameOrEmail) throws UsernameNotFoundException {

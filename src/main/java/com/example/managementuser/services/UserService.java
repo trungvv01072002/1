@@ -24,6 +24,7 @@ public interface UserService {
 
 //    UserAndRole getUserByJwt(String jwt);
 
-    UserAndRoleI getUserByJwt(String jwt);
+    UserRes getUserByJwt(String jwt);
 
+    void deleteUser(Long id);
 }

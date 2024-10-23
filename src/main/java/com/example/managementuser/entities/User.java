@@ -1,9 +1,11 @@
 package com.example.managementuser.entities;
 
+import com.example.managementuser.enums.RoleEnum;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity(name = "users")
 @Data
@@ -22,4 +24,9 @@ public class User {
     private String password;
     private LocalDate created_at;
     private LocalDate updated_at;
+    private String oneTimeToken;
+
+    @OneToMany(mappedBy = "user")
+    private List<Role> roles;
+
 }

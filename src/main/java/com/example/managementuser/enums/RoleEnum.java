@@ -1,4 +1,4 @@
-package com.example.managementuser.constants;
+package com.example.managementuser.enums;
 
 public enum RoleEnum {
     ROLE_ADMIN,

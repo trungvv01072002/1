@@ -1,7 +1,7 @@
 package com.example.managementuser.services.impl;
 
-import com.example.managementuser.constants.RoleEnum;
-import com.example.managementuser.dtos.domains.UserAndRole;
+import com.example.managementuser.Exceptions.CustomException;
+import com.example.managementuser.enums.RoleEnum;
 import com.example.managementuser.dtos.domains.UserAndRoleI;
 import com.example.managementuser.dtos.req.JWTAuthDto;
 import com.example.managementuser.dtos.req.UserLoginReq;
@@ -19,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -44,6 +45,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public JWTAuthDto registerUser(UserRegisterReq userRegisterReq) throws Exception {
+
         boolean isExistMail = userRepository.existsByEmailOrUserName(userRegisterReq.getEmail(), userRegisterReq.getUserName());
 
         if(isExistMail ) throw new Exception("Email or UserName is Already used with another account");
@@ -56,7 +58,8 @@ public class UserServiceImpl implements UserService {
                 .created_at(LocalDate.now())
                 .build();
         User savedUSer = userRepository.save(user);
-        roleRepository.save(Role.builder().name(RoleEnum.ROLE_USER).userId(savedUSer.getId()).build());
+        Role role = Role.builder().user(savedUSer).name(RoleEnum.ROLE_USER).build();
+        roleRepository.save(role);
 
         Authentication authentication = authenticate(savedUSer.getUserName(),userRegisterReq.getPassword());
         SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -66,6 +69,8 @@ public class UserServiceImpl implements UserService {
         JWTAuthDto jwtAuthDto = new JWTAuthDto();
         jwtAuthDto.setAccessToken(token);
         jwtAuthDto.setRefreshToken(refreshToken);
+//        savedUSer.setOneTimeToken(token);
+//        userRepository.save(savedUSer);
 
         return jwtAuthDto;
     }
@@ -88,9 +93,29 @@ public class UserServiceImpl implements UserService {
 //            return userRepository.findUserByUserName(userName);
 //    }
 
-    public UserAndRoleI getUserByJwt(String jwt){
+    public UserRes getUserByJwt(String jwt){
         String userName = jwtTokenProvider.getUsername(jwt.substring(7));
-        return userRepository.findUserByUserName(userName);
+//        User user = userRepository.findUserByUserName(userName)
+//                .orElseThrow(() -> new BadCredentialsException("User not found"));
+
+//        if(user.getOneTimeToken()!=null  && user.getOneTimeToken().equals(jwt.substring(7))){
+//            throw new BadCredentialsException("Token is invalid");
+//        }
+//
+//        if(user.getOneTimeToken() == null){
+//            user.setOneTimeToken(jwt.substring(7));
+//            userRepository.save(user);
+//        }
+
+
+        return userMapper.toUserRes(userRepository.findUserByUserNameV2(userName));
+
+
+    }
+
+    @Override
+    public void deleteUser(Long id) {
+        userRepository.deleteById(id);
     }
 
     @Override
@@ -101,18 +126,22 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserRes updateUser(UserRegisterReq userRegisterReq, Long id) {
-//        Optional<User> user = userRepository.findById(id);
-//        if(user.isPresent()){
-//            user.get().setName(userRegisterReq.getName());
-//            user.get().setEmail(userRegisterReq.getEmail());
-//            user.get().setPassword(passwordEncoder.encode(userRegisterReq.getPassword()));
-//            User savedUser = userRepository.save(user.get());
-//            return userMapper.toUserRes(savedUser);
-//        }
-        return null;
+        Optional<User> user = userRepository.findById(id);
+        if(user.isPresent()){
+            user.get().setFullName(userRegisterReq.getFullName());
+            user.get().setEmail(userRegisterReq.getEmail());
+            user.get().setPassword(passwordEncoder.encode(userRegisterReq.getPassword()));
+            user.get().setUserName(userRegisterReq.getUserName());
+            user.get().setUpdated_at(LocalDate.now());
+            User savedUser = userRepository.save(user.get());
+            return userMapper.toUserRes(savedUser);
+
+        }
+        throw new CustomException("User not found", HttpStatus.BAD_REQUEST);
+
     }
 
-    public JWTAuthDto refreshToken(String refreshToken){
+    public JWTAuthDto refreshToken(String refreshToken) throws Exception {
         JWTAuthDto jwtAuthDto = new JWTAuthDto();
         String userName = jwtTokenProvider.getUsername(refreshToken);
 //        Optional<Users> user = userRepository.findByUserNameOrEmail(userName,userName);
@@ -144,4 +173,6 @@ public class UserServiceImpl implements UserService {
 
         return new UsernamePasswordAuthenticationToken(userDetails,null,userDetails.getAuthorities());
     }
+
+
 }
