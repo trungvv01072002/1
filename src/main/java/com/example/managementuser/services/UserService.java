@@ -1,6 +1,7 @@
 package com.example.managementuser.services;
 
 import com.example.managementuser.dtos.domains.UserAndRole;
+import com.example.managementuser.dtos.domains.UserAndRoleI;
 import com.example.managementuser.dtos.req.JWTAuthDto;
 import com.example.managementuser.dtos.req.UserLoginReq;
 import com.example.managementuser.dtos.req.UserRegisterReq;
@@ -21,5 +22,8 @@ public interface UserService {
 
     UserRes updateUser(UserRegisterReq userRegisterReq, Long id);
 
-    UserAndRole getUserByJwt(String jwt);
+//    UserAndRole getUserByJwt(String jwt);
+
+    UserAndRoleI getUserByJwt(String jwt);
+
 }

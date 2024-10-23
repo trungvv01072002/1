@@ -2,6 +2,7 @@ package com.example.managementuser.services.impl;
 
 import com.example.managementuser.constants.RoleEnum;
 import com.example.managementuser.dtos.domains.UserAndRole;
+import com.example.managementuser.dtos.domains.UserAndRoleI;
 import com.example.managementuser.dtos.req.JWTAuthDto;
 import com.example.managementuser.dtos.req.UserLoginReq;
 import com.example.managementuser.dtos.req.UserRegisterReq;
@@ -82,9 +83,14 @@ public class UserServiceImpl implements UserService {
         return jwtAuthDto;
     }
 
-    public UserAndRole getUserByJwt(String jwt){
-            String userName = jwtTokenProvider.getUsername(jwt.substring(7));
-            return userRepository.findUserByUserName(userName);
+//    public UserAndRole getUserByJwt(String jwt){
+//            String userName = jwtTokenProvider.getUsername(jwt.substring(7));
+//            return userRepository.findUserByUserName(userName);
+//    }
+
+    public UserAndRoleI getUserByJwt(String jwt){
+        String userName = jwtTokenProvider.getUsername(jwt.substring(7));
+        return userRepository.findUserByUserName(userName);
     }
 
     @Override

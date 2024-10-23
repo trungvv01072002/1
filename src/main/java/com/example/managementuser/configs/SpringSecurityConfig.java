@@ -28,18 +28,22 @@ import java.util.Arrays;
 @Configuration // DEFINE BEAN
 @EnableWebSecurity
 public class SpringSecurityConfig {
-    @Autowired
     private JwtAuthenticationFilter jwtAuthenticationFilter;
 
-//    @Autowired
-//    SpringSecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter){
-//        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
-//    }
+    @Autowired
+    SpringSecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter){
+        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+    }
 
     @Bean  // Define method bean
     public static PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
     }
+
+    String [] whiteList = new String[]{
+            "/api/v1/users/login",
+            "/api/v1/users/register",
+    };
 
 
     @Bean
@@ -47,13 +51,9 @@ public class SpringSecurityConfig {
         http.cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((authorize) -> {
-//                    authorize.requestMatchers("/api/auth/signingoogle","/api/auth/profile").authenticated();
-//                    authorize.requestMatchers("/", "/error", "/webjars/**","/api/auth/**", "/oauth2/**").permitAll();
-//                    authorize.requestMatchers("/api/admin/**","/api/schedule/**","/api/account/**").hasAuthority("ADMIN");
-//                    authorize.requestMatchers("/api/v1/user/**").hasAnyAuthority("EMPLOYEE","ADMIN");
-                    authorize.anyRequest().permitAll();
+                    authorize.requestMatchers(whiteList).permitAll()
+                            .anyRequest().authenticated();
                 });
-//
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();

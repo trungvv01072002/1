@@ -60,7 +60,9 @@ public class UserController {
     @GetMapping("/profile")
     public ResponseEntity<?> getUserByJwt(@RequestHeader("Authorization") String jwt) {
         try{
+//            return new ResponseEntity<>(userService.getUserByJwt(jwt), HttpStatus.OK);
             return new ResponseEntity<>(userService.getUserByJwt(jwt), HttpStatus.OK);
+
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
