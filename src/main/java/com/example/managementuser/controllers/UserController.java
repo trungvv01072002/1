@@ -29,8 +29,7 @@ public class UserController {
     @PutMapping("/login")
     public ResponseEntity<?> login(@RequestBody UserLoginReq userLoginReq) {
         try{
-            UserRes userRes = userService.loginUser(userLoginReq);
-            return new ResponseEntity<>(userRes, HttpStatus.OK);
+            return new ResponseEntity<>(userService.loginUser(userLoginReq), HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }

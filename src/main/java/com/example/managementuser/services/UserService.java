@@ -15,7 +15,7 @@ import java.util.Optional;
 public interface UserService {
     JWTAuthDto registerUser(UserRegisterReq userRegisterReq) throws Exception;
 
-    UserRes loginUser(UserLoginReq userLoginReq);
+    JWTAuthDto loginUser(UserLoginReq userLoginReq);
 
     Page<UserRes> getAllUser(int page, int size, String keySearch);
 

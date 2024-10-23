@@ -67,38 +67,24 @@ public class UserServiceImpl implements UserService {
         jwtAuthDto.setRefreshToken(refreshToken);
 
         return jwtAuthDto;
-//        return userMapper.toUserRes(savedUSer);
     }
 
     @Override
-    public UserRes loginUser(UserLoginReq userLoginReq) {
-//        Authentication authentication = authenticate(userLoginReq.getEmail(),userLoginReq.getPassword());
-//        SecurityContextHolder.getContext().setAuthentication(authentication);
-//
-//        String token = jwtTokenProvider.generateToken(authentication);
-//        String refreshToken = jwtTokenProvider.generateRefreshToken(new HashMap<>(),authentication);
-//        JWTAuthDto jwtAuthDto = new JWTAuthDto();
-//        jwtAuthDto.setAccessToken(token);
-//        jwtAuthDto.setRefreshToken(refreshToken);
-//
-//        return jwtAuthDto;
-//        if(authentication == null){
-//            throw new BadCredentialsException("Invalid username or password");
-//        }
-        return userMapper.toUserRes(userRepository.findUserByUserNameOrEmail(userLoginReq.getEmailOrUsername(), userLoginReq.getEmailOrUsername()).get());
+    public JWTAuthDto loginUser(UserLoginReq userLoginReq) {
+        Authentication authentication = authenticate(userLoginReq.getEmailOrUsername(),userLoginReq.getPassword());
+        SecurityContextHolder.getContext().setAuthentication(authentication);
 
+        String token = jwtTokenProvider.generateToken(authentication);
+        String refreshToken = jwtTokenProvider.generateRefreshToken(new HashMap<>(),authentication);
+        JWTAuthDto jwtAuthDto = new JWTAuthDto();
+        jwtAuthDto.setAccessToken(token);
+        jwtAuthDto.setRefreshToken(refreshToken);
+        return jwtAuthDto;
     }
 
     public UserAndRole getUserByJwt(String jwt){
-        try {
             String userName = jwtTokenProvider.getUsername(jwt.substring(7));
-
-//            return userMapper.toUserRes(userRepository.findUserByUserNameOrEmail(userName,userName).get());
             return userRepository.findUserByUserName(userName);
-        }
-        catch (Exception e){
-            throw new BadCredentialsException(e.getMessage());
-        }
     }
 
     @Override

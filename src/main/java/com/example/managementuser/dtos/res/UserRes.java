@@ -13,5 +13,4 @@ public class UserRes {
     private String email;
     private String username;
     private String role;
-    private String password;
 }
