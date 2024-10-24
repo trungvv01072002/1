@@ -25,8 +25,9 @@ public class User {
     private LocalDate created_at;
     private LocalDate updated_at;
     private String oneTimeToken;
+    private Boolean isTokenExpired;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Role> roles;
 
 }

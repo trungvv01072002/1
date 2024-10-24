@@ -1,10 +1,7 @@
 package com.example.managementuser.controllers;
 
-import com.example.managementuser.Exceptions.CustomException;
-import com.example.managementuser.dtos.req.JWTAuthDto;
 import com.example.managementuser.dtos.req.UserLoginReq;
 import com.example.managementuser.dtos.req.UserRegisterReq;
-import com.example.managementuser.dtos.res.UserRes;
 import com.example.managementuser.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -51,6 +48,16 @@ public class UserController {
     public ResponseEntity<?> update(@RequestBody UserRegisterReq userRegisterReq, @PathVariable("id") Long id) {
         try{
             return new ResponseEntity<>(userService.updateUser(userRegisterReq, id), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+
+    }
+
+    @PutMapping("/profile/update")
+    public ResponseEntity<?> updateProfile(@RequestBody UserRegisterReq userRegisterReq, @RequestHeader("Authorization") String jwt) {
+        try{
+            return new ResponseEntity<>(userService.updateUser(userRegisterReq, userService.getUserByJwt(jwt).getId()), HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }

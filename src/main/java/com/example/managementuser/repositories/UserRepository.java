@@ -25,7 +25,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 //    UserAndRole findUserByUserName(@Param("userName") String userName);
 
     @Query("select u from users u left join fetch u.roles where u.userName = :userName")
-    User findUserByUserNameV2(@Param("userName") String userName);
+    Optional<User> findUserByUserNameV2(@Param("userName") String userName);
 
 
     @Query(value = "SELECT u.id as id, u.user_name as userName, u.email as email, u.full_name as fullName, r.name as name FROM users u JOIN roles r ON u.id = r.user_id WHERE u.user_name = :userName", nativeQuery = true)

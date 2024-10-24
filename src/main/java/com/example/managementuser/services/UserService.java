@@ -27,4 +27,6 @@ public interface UserService {
     UserRes getUserByJwt(String jwt);
 
     void deleteUser(Long id);
+
+    UserRes getUserById(Long id);
 }

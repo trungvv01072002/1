@@ -13,10 +13,7 @@ spring:
   server:
     port: '8080'
 
-#jwt:
-#  secretary: daf66e01593f61a15b857cf433aae03a005812b31234e149036bcc8dee755dbb
-
 app:
   app-jwt-expiration-milliseconds: '21440000'
-  jwt-secret: daf66e01593f61a15b857cf433aae03a005812b31234e149036bcc8dee755dbb
+  jwt-secret: ${JWT_SECRET}
   app-jwt-renewal-milliseconds: '604800000'

@@ -1,5 +1,6 @@
 package com.example.managementuser.configs;
 
+import com.example.managementuser.securities.JwtAuthenticationEntryPoint;
 import com.example.managementuser.securities.JwtAuthenticationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -17,7 +18,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.stereotype.Component;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -40,20 +40,28 @@ public class SpringSecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-    String [] whiteList = new String[]{
+    String [] authenticationEndPoint = new String[]{
             "/api/v1/users/login",
             "/api/v1/users/register",
             "/swagger-ui/**",
             "/v3/**"
     };
 
-    String [] userApiList = new String[]{
-            "/api/v1/users/**"
+//    String [] whiteEndPoint = new String[]{
+//
+//    };
+
+    String [] userEndPoint = new String[]{
+            "/api/v1/users/profile/**",
+            "/api/v1/users/search/**",
     };
 
-    String [] adminApiList = new String[]{
-            "/api/v1/admin/**"
+    String [] adminEndPoint = new String[]{
+            "/api/v1/users/update/**",
+            "/api/v1/users/delete/**",
+            "/api/v1/admin/user/**",
     };
+
 
 
     @Bean
@@ -61,10 +69,12 @@ public class SpringSecurityConfig {
         http.cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((authorize) -> {
-//                    authorize.requestMatchers(whiteList).permitAll()
-//                            .anyRequest().authenticated();
-                    authorize.anyRequest().permitAll();
-                });
+                    authorize.requestMatchers(userEndPoint).hasAnyAuthority("ROLE_USER","ROLE_ADMIN");
+                    authorize.requestMatchers(adminEndPoint).hasAuthority("ROLE_ADMIN");
+                    authorize.requestMatchers(authenticationEndPoint).permitAll();
+//                    authorize.anyRequest().permitAll();
+                })
+                .exceptionHandling((exceptionHandling) -> exceptionHandling.authenticationEntryPoint(new JwtAuthenticationEntryPoint()));
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
@@ -89,5 +99,6 @@ public class SpringSecurityConfig {
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
+
 
 }

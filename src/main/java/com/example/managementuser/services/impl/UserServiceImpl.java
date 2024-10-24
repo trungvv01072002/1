@@ -66,11 +66,16 @@ public class UserServiceImpl implements UserService {
 
         String token = jwtTokenProvider.generateToken(authentication);
         String refreshToken = jwtTokenProvider.generateRefreshToken(new HashMap<>(),authentication);
-        JWTAuthDto jwtAuthDto = new JWTAuthDto();
-        jwtAuthDto.setAccessToken(token);
-        jwtAuthDto.setRefreshToken(refreshToken);
-//        savedUSer.setOneTimeToken(token);
-//        userRepository.save(savedUSer);
+
+        JWTAuthDto jwtAuthDto = JWTAuthDto.builder()
+                .accessToken(token)
+                .refreshToken(refreshToken)
+                .build();
+
+        savedUSer.setOneTimeToken(token);
+        savedUSer.setIsTokenExpired(false);
+
+        userRepository.save(savedUSer);
 
         return jwtAuthDto;
     }
@@ -88,34 +93,48 @@ public class UserServiceImpl implements UserService {
         return jwtAuthDto;
     }
 
-//    public UserAndRole getUserByJwt(String jwt){
-//            String userName = jwtTokenProvider.getUsername(jwt.substring(7));
-//            return userRepository.findUserByUserName(userName);
-//    }
 
     public UserRes getUserByJwt(String jwt){
         String userName = jwtTokenProvider.getUsername(jwt.substring(7));
-//        User user = userRepository.findUserByUserName(userName)
-//                .orElseThrow(() -> new BadCredentialsException("User not found"));
 
-//        if(user.getOneTimeToken()!=null  && user.getOneTimeToken().equals(jwt.substring(7))){
-//            throw new BadCredentialsException("Token is invalid");
-//        }
-//
-//        if(user.getOneTimeToken() == null){
-//            user.setOneTimeToken(jwt.substring(7));
-//            userRepository.save(user);
-//        }
+        User user = userRepository.findUserByUserNameV2(userName)
+                .orElseThrow(() -> new CustomException("User not found", HttpStatus.BAD_REQUEST));
+
+        checkOneTimeToken(jwt);
+
+        return userMapper.toUserRes(user);
 
 
-        return userMapper.toUserRes(userRepository.findUserByUserNameV2(userName));
+    }
 
+    public void checkOneTimeToken(String jwt){
+        String userName = jwtTokenProvider.getUsername(jwt.substring(7));
 
+        User user = userRepository.findUserByUserNameV2(userName)
+                .orElseThrow(() -> new CustomException("User not found", HttpStatus.BAD_REQUEST));
+
+        if(user.getOneTimeToken().equals(jwt.substring(7)) && user.getIsTokenExpired()){
+            throw new BadCredentialsException("Token is invalid");
+        }
+
+        if(user.getOneTimeToken().equals(jwt.substring(7)) && !user.getIsTokenExpired()){
+            user.setIsTokenExpired(true);
+            userRepository.save(user);
+        }
     }
 
     @Override
     public void deleteUser(Long id) {
         userRepository.deleteById(id);
+    }
+
+    @Override
+    public UserRes getUserById(Long id) {
+        Optional<User> user = userRepository.findById(id);
+        if(user.isPresent()){
+            return userMapper.toUserRes(user.get());
+        }
+        throw new CustomException("User not found", HttpStatus.BAD_REQUEST);
     }
 
     @Override
