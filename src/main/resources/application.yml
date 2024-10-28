@@ -12,8 +12,20 @@ spring:
     show-sql: 'true'
   server:
     port: '8080'
+  mail:
+    properties:
+      mail:
+        smtp:
+          starttls:
+            enable: 'true'
+          auth: 'true'
+    host: smtp.gmail.com
+    username: ${email}
+    password: ${password}
+    port: '587'
 
 app:
+  bootstrap-servers: PLAINTEXT://broker:9090
   app-jwt-expiration-milliseconds: '21440000'
-  jwt-secret: ${JWT_SECRET}
+  jwt-secret: ${JWT_SECRET:750ca18c80ff33503cb101c61e9dfad1d9aa55156f2510fbbf50f0db2595d153bcc1bfc509bf82ab9535427653ee90c62662132d447af8758917a64ecee7e5e3}
   app-jwt-renewal-milliseconds: '604800000'
